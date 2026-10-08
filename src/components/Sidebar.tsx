@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { 
   LayoutDashboard, 
   Search, 
@@ -11,11 +12,18 @@ import {
   BookOpen, 
   GraduationCap, 
   Bot,
-  LogOut
+  LogOut,
+  Moon,
+  Sun
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -57,8 +65,17 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto">
-        <Link href="/" className="sidebar-item hover:text-danger-400">
+      <div className="mt-auto flex flex-col gap-2">
+        {mounted && (
+          <button 
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+            className="sidebar-item w-full bg-transparent"
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+        )}
+        <Link href="/" className="sidebar-item hover:text-danger-500">
           <LogOut size={18} />
           <span>Exit App</span>
         </Link>
