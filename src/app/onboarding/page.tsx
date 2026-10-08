@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'next';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, UserCircle, GraduationCap, MapPin } from 'lucide-react';
 import Link from 'next/link';
