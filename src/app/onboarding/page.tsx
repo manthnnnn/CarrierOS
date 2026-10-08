@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BookOpen, UserCircle, GraduationCap, MapPin } from 'lucide-react';
+import { ArrowRight, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Onboarding() {
@@ -18,21 +18,35 @@ export default function Onboarding() {
   ];
 
   return (
-    <div className="container min-h-screen flex flex-col pt-24 pb-12">
+    <div className="min-h-screen flex flex-col pt-24 pb-12 px-6">
       <div className="max-w-2xl mx-auto w-full">
-        <div className="step-progress mb-12">
-          <div className={`step-dot ${step >= 1 ? 'current' : ''}`}>1</div>
-          <div className={`step-line ${step >= 2 ? 'completed' : ''}`}></div>
-          <div className={`step-dot ${step >= 2 ? 'current' : ''}`}>2</div>
-          <div className={`step-line ${step >= 3 ? 'completed' : ''}`}></div>
-          <div className={`step-dot ${step >= 3 ? 'current' : ''}`}>3</div>
+        {/* Progress Bar (Tailwind native) */}
+        <div className="flex items-center justify-between mb-12 relative z-10">
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-gray-800 -z-10 rounded"></div>
+          <div 
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary-500 -z-10 rounded transition-all duration-500"
+            style={{ width: `${(step - 1) * 50}%` }}
+          ></div>
+
+          {[1, 2, 3].map((num) => (
+            <div 
+              key={num}
+              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-colors duration-300 ${
+                step >= num 
+                  ? 'bg-primary-500 border-primary-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)]' 
+                  : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-400'
+              }`}
+            >
+              {num}
+            </div>
+          ))}
         </div>
 
         {step === 1 && (
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="card p-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="card border border-border p-8 md:p-10"
           >
             <h2 className="display-sm mb-2 text-gradient">Where are you right now?</h2>
             <p className="text-secondary mb-8">Tell us your current education level to personalize your roadmap.</p>
@@ -41,24 +55,30 @@ export default function Onboarding() {
               {classes.map((cls) => (
                 <button
                   key={cls.id}
-                  className={`option-card ${selectedClass === cls.id ? 'selected' : ''}`}
+                  className={`option-card flex items-center gap-4 p-4 rounded-xl border text-left transition-all ${
+                    selectedClass === cls.id 
+                      ? 'border-primary-500 bg-primary-500/10 shadow-[0_0_20px_rgba(59,130,246,0.15)]' 
+                      : 'border-border hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-gray-900/50'
+                  }`}
                   onClick={() => setSelectedClass(cls.id)}
                 >
-                  <div className="feature-icon bg-gradient-to-br from-primary-500 to-accent-500 w-10 h-10 mb-0 flex-shrink-0">
-                    <GraduationCap size={20} className="text-white" />
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+                    selectedClass === cls.id ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-primary-500'
+                  }`}>
+                    <GraduationCap size={24} />
                   </div>
                   <div>
-                    <div className="font-bold text-primary">{cls.label}</div>
-                    <div className="text-xs text-muted mt-1">{cls.desc}</div>
+                    <div className="font-bold text-gray-900 dark:text-white text-lg">{cls.label}</div>
+                    <div className="text-sm text-secondary mt-0.5">{cls.desc}</div>
                   </div>
                 </button>
               ))}
             </div>
 
             <div className="flex justify-between items-center mt-10">
-              <Link href="/" className="btn btn-ghost">Back</Link>
+              <Link href="/" className="btn btn-ghost px-4 py-2">Back to Home</Link>
               <button 
-                className="btn btn-primary"
+                className="btn btn-primary px-6 py-2"
                 disabled={!selectedClass}
                 onClick={() => setStep(2)}
               >
@@ -68,21 +88,22 @@ export default function Onboarding() {
           </motion.div>
         )}
 
-        {/* Similar sections for step 2, 3 would go here */}
         {step > 1 && (
            <motion.div 
-           initial={{ opacity: 0, x: 20 }}
-           animate={{ opacity: 1, x: 0 }}
-           className="card p-8 text-center"
+           initial={{ opacity: 0, scale: 0.95 }}
+           animate={{ opacity: 1, scale: 1 }}
+           className="card border border-border p-12 text-center flex flex-col items-center justify-center min-h-[400px]"
          >
+            <div className="w-20 h-20 bg-primary-500/10 text-primary-500 rounded-full flex items-center justify-center mb-6">
+              <GraduationCap size={40} />
+            </div>
             <h2 className="display-sm mb-4">Great! Let's build your profile.</h2>
-            <p className="text-secondary mb-8">We will now analyze your strengths and weaknesses.</p>
-            <Link href="/dashboard" className="btn btn-primary btn-lg">
-              Go to Dashboard
+            <p className="text-secondary mb-10 max-w-md mx-auto">We will now analyze your strengths, weaknesses, and logical reasoning skills to find your perfect career match.</p>
+            <Link href="/dashboard" className="btn btn-primary">
+              Continue to Dashboard <ArrowRight size={18} className="ml-2" />
             </Link>
          </motion.div>
         )}
-
       </div>
     </div>
   );
