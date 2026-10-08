@@ -6,9 +6,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="dash-layout">
       <Sidebar />
-      <main className="dash-main animate-fadeIn">
-        {children}
-      </main>
+      <main className="dash-main animate-fadeIn">{children}</main>
     </div>
   );
 }

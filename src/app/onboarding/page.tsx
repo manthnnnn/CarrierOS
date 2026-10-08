@@ -1,109 +1,182 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, GraduationCap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ArrowLeft, GraduationCap, CheckCircle2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+
+const classes = [
+  { id: '10',      label: 'Class 10',  desc: 'Choosing the right stream' },
+  { id: '11',      label: 'Class 11',  desc: 'Just started my stream' },
+  { id: '12',      label: 'Class 12',  desc: 'Preparing for entrance exams' },
+  { id: 'diploma', label: 'Diploma',   desc: 'Exploring next steps' },
+  { id: 'college', label: 'College',   desc: 'Finding the right career path' },
+];
+
+const streams = [
+  { id: 'science',   label: 'Science (PCM)',     desc: 'Physics · Chemistry · Math' },
+  { id: 'scienceBio',label: 'Science (PCB)',      desc: 'Physics · Chemistry · Biology' },
+  { id: 'commerce',  label: 'Commerce',           desc: 'Accounts · Economics · Business' },
+  { id: 'arts',      label: 'Arts / Humanities',  desc: 'History · Lit · Sociology' },
+  { id: 'unsure',    label: 'Not decided yet',    desc: 'Help me figure it out' },
+];
+
+const slideVariants = {
+  enter: { opacity: 0, x: 40 },
+  center: { opacity: 1, x: 0 },
+  exit:  { opacity: 0, x: -40 },
+};
 
 export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [selectedClass, setSelectedClass] = useState<string | null>(null);
-
-  const classes = [
-    { id: '10', label: 'Class 10', desc: 'Looking for the right stream' },
-    { id: '11', label: 'Class 11', desc: 'Just started my stream' },
-    { id: '12', label: 'Class 12', desc: 'Preparing for college/entrance exams' },
-    { id: 'diploma', label: 'Diploma', desc: 'Exploring next steps' },
-    { id: 'college', label: 'College', desc: 'Looking for right career path' }
-  ];
+  const [selectedStream, setSelectedStream] = useState<string | null>(null);
+  const totalSteps = 3;
 
   return (
-    <div className="min-h-screen flex flex-col pt-24 pb-12 px-6">
-      <div className="max-w-2xl mx-auto w-full">
-        {/* Progress Bar (Tailwind native) */}
-        <div className="flex items-center justify-between mb-12 relative z-10">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-gray-800 -z-10 rounded"></div>
-          <div 
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary-500 -z-10 rounded transition-all duration-500"
-            style={{ width: `${(step - 1) * 50}%` }}
-          ></div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 24px 40px' }}>
+      <div style={{ width: '100%', maxWidth: 560 }}>
 
-          {[1, 2, 3].map((num) => (
-            <div 
-              key={num}
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-colors duration-300 ${
-                step >= num 
-                  ? 'bg-primary-500 border-primary-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)]' 
-                  : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-400'
-              }`}
-            >
-              {num}
-            </div>
-          ))}
+        {/* Logo */}
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', justifyContent: 'center', marginBottom: 40 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 7, background: 'linear-gradient(135deg,#2563EB,#8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Sparkles size={14} color="#fff" />
+          </div>
+          <span className="text-gradient" style={{ fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.02em' }}>CareerOS</span>
+        </Link>
+
+        {/* Step indicator */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 40 }}>
+          {Array.from({ length: totalSteps }).map((_, i) => {
+            const num = i + 1;
+            const done = step > num;
+            const active = step === num;
+            return (
+              <div key={num} style={{ display: 'flex', alignItems: 'center' }}>
+                <div className={`step-dot ${active ? 'active' : done ? 'done' : ''}`}>
+                  {done ? <CheckCircle2 size={14} /> : num}
+                </div>
+                {i < totalSteps - 1 && (
+                  <div style={{ width: 60, height: 2, background: step > num ? 'var(--brand-500)' : 'var(--border)', transition: 'background 0.4s', margin: '0 4px' }} />
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {step === 1 && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="card border border-border p-8 md:p-10"
-          >
-            <h2 className="display-sm mb-2 text-gradient">Where are you right now?</h2>
-            <p className="text-secondary mb-8">Tell us your current education level to personalize your roadmap.</p>
-            
-            <div className="flex flex-col gap-4 mb-8">
-              {classes.map((cls) => (
-                <button
-                  key={cls.id}
-                  className={`option-card flex items-center gap-4 p-4 rounded-xl border text-left transition-all ${
-                    selectedClass === cls.id 
-                      ? 'border-primary-500 bg-primary-500/10 shadow-[0_0_20px_rgba(59,130,246,0.15)]' 
-                      : 'border-border hover:border-primary-500/50 hover:bg-gray-50 dark:hover:bg-gray-900/50'
-                  }`}
-                  onClick={() => setSelectedClass(cls.id)}
-                >
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
-                    selectedClass === cls.id ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-primary-500'
-                  }`}>
-                    <GraduationCap size={24} />
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-900 dark:text-white text-lg">{cls.label}</div>
-                    <div className="text-sm text-secondary mt-0.5">{cls.desc}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex justify-between items-center mt-10">
-              <Link href="/" className="btn btn-ghost px-4 py-2">Back to Home</Link>
-              <button 
-                className="btn btn-primary px-6 py-2"
-                disabled={!selectedClass}
-                onClick={() => setStep(2)}
+        {/* Card */}
+        <div style={{ position: 'relative', overflow: 'hidden' }}>
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div key="step1" variants={slideVariants} initial="enter" animate="center" exit="exit"
+                transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+                className="card" style={{ padding: '36px 32px' }}
               >
-                Next Step <ArrowRight size={18} />
-              </button>
-            </div>
-          </motion.div>
-        )}
+                <h2 className="display-sm" style={{ marginBottom: 8 }}>Where are you right now?</h2>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: 28, fontSize: '0.9375rem' }}>
+                  Tell us your current education level to personalise your roadmap.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
+                  {classes.map((cls) => (
+                    <button key={cls.id} className={`option-card ${selectedClass === cls.id ? 'selected' : ''}`}
+                      onClick={() => setSelectedClass(cls.id)}>
+                      <div style={{
+                        width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+                        background: selectedClass === cls.id ? 'var(--brand-500)' : 'var(--brand-50)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.2s',
+                      }}>
+                        <GraduationCap size={20} color={selectedClass === cls.id ? '#fff' : 'var(--brand-600)'} />
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary)' }}>{cls.label}</div>
+                        <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: 2 }}>{cls.desc}</div>
+                      </div>
+                      {selectedClass === cls.id && (
+                        <CheckCircle2 size={18} color="var(--brand-500)" style={{ marginLeft: 'auto' }} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Link href="/" className="btn btn-ghost btn-sm">← Back to Home</Link>
+                  <button className="btn btn-primary" disabled={!selectedClass} onClick={() => setStep(2)}>
+                    Next Step <ArrowRight size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-        {step > 1 && (
-           <motion.div 
-           initial={{ opacity: 0, scale: 0.95 }}
-           animate={{ opacity: 1, scale: 1 }}
-           className="card border border-border p-12 text-center flex flex-col items-center justify-center min-h-[400px]"
-         >
-            <div className="w-20 h-20 bg-primary-500/10 text-primary-500 rounded-full flex items-center justify-center mb-6">
-              <GraduationCap size={40} />
-            </div>
-            <h2 className="display-sm mb-4">Great! Let's build your profile.</h2>
-            <p className="text-secondary mb-10 max-w-md mx-auto">We will now analyze your strengths, weaknesses, and logical reasoning skills to find your perfect career match.</p>
-            <Link href="/dashboard" className="btn btn-primary">
-              Continue to Dashboard <ArrowRight size={18} className="ml-2" />
-            </Link>
-         </motion.div>
-        )}
+            {step === 2 && (
+              <motion.div key="step2" variants={slideVariants} initial="enter" animate="center" exit="exit"
+                transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+                className="card" style={{ padding: '36px 32px' }}
+              >
+                <h2 className="display-sm" style={{ marginBottom: 8 }}>What&apos;s your stream / interest?</h2>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: 28, fontSize: '0.9375rem' }}>
+                  This helps us narrow down the most relevant career paths for you.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
+                  {streams.map((s) => (
+                    <button key={s.id} className={`option-card ${selectedStream === s.id ? 'selected' : ''}`}
+                      onClick={() => setSelectedStream(s.id)}>
+                      <div style={{
+                        width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+                        background: selectedStream === s.id ? 'var(--brand-500)' : 'var(--brand-50)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.2s', fontWeight: 800, fontSize: '0.875rem',
+                        color: selectedStream === s.id ? '#fff' : 'var(--brand-600)',
+                      }}>
+                        {s.id === 'unsure' ? '?' : s.label.charAt(0)}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary)' }}>{s.label}</div>
+                        <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginTop: 2 }}>{s.desc}</div>
+                      </div>
+                      {selectedStream === s.id && (
+                        <CheckCircle2 size={18} color="var(--brand-500)" style={{ marginLeft: 'auto' }} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setStep(1)}>
+                    <ArrowLeft size={16} /> Back
+                  </button>
+                  <button className="btn btn-primary" disabled={!selectedStream} onClick={() => setStep(3)}>
+                    Next Step <ArrowRight size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 3 && (
+              <motion.div key="step3" variants={slideVariants} initial="enter" animate="center" exit="exit"
+                transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+                className="card" style={{ padding: '48px 32px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                <div style={{
+                  width: 72, height: 72, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, var(--brand-500), var(--accent-500))',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  marginBottom: 24, boxShadow: '0 8px 24px rgba(37,99,235,0.30)',
+                }}>
+                  <CheckCircle2 size={36} color="#fff" />
+                </div>
+                <h2 className="display-sm" style={{ marginBottom: 12 }}>Profile Created!</h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', lineHeight: 1.65, maxWidth: 380, marginBottom: 32 }}>
+                  We&apos;ll now analyse your strengths, interests, and reasoning to build your personalised career roadmap.
+                </p>
+                <Link href="/dashboard" className="btn btn-primary btn-lg" style={{ width: '100%', justifyContent: 'center' }}>
+                  Go to My Dashboard <ArrowRight size={18} />
+                </Link>
+                <button className="btn btn-ghost btn-sm" style={{ marginTop: 12 }} onClick={() => setStep(2)}>
+                  <ArrowLeft size={14} /> Go back
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

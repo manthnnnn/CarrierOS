@@ -3,18 +3,19 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { 
-  LayoutDashboard, 
-  Search, 
-  Map, 
-  ClipboardCheck, 
-  TerminalSquare, 
-  BookOpen, 
-  GraduationCap, 
+import {
+  LayoutDashboard,
+  Search,
+  Map,
+  ClipboardCheck,
+  TerminalSquare,
+  BookOpen,
+  GraduationCap,
   Bot,
   LogOut,
   Moon,
-  Sun
+  Sun,
+  Sparkles,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -22,7 +23,6 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => setMounted(true), []);
 
   const navItems = [
@@ -38,45 +38,55 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <Link href="/" className="nav-logo mb-6 text-gradient font-display text-xl">
-        PathwayAI
+      {/* Logo */}
+      <Link href="/" className="sidebar-logo">
+        <div
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: 7,
+            background: 'linear-gradient(135deg, #2563EB, #8B5CF6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Sparkles size={14} color="#fff" />
+        </div>
+        <span className="text-gradient" style={{ fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+          CareerOS
+        </span>
       </Link>
-      
-      <div className="text-xs font-semibold text-muted mb-4 uppercase tracking-wider">Menu</div>
-      
-      <nav className="flex flex-col gap-2">
+
+      {/* Menu label */}
+      <div className="sidebar-section-label">Navigation</div>
+
+      {/* Nav items */}
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.path || pathname.startsWith(`${item.path}/`);
-          
+
           return (
-            <Link 
-              key={item.path} 
-              href={item.path}
-              className={`sidebar-item ${isActive ? 'active' : ''}`}
-            >
-              <Icon size={18} />
+            <Link key={item.path} href={item.path} className={`sidebar-item ${isActive ? 'active' : ''}`}>
+              <Icon size={17} className="sidebar-icon" />
               <span>{item.name}</span>
-              {item.badge && (
-                <span className="sidebar-badge">{item.badge}</span>
-              )}
+              {item.badge && <span className="sidebar-badge">{item.badge}</span>}
             </Link>
           );
         })}
       </nav>
 
-      <div className="mt-auto flex flex-col gap-2">
+      {/* Footer actions */}
+      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 4, paddingTop: 16 }}>
         {mounted && (
-          <button 
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-            className="sidebar-item w-full bg-transparent"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="sidebar-item">
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
         )}
-        <Link href="/" className="sidebar-item hover:text-danger-500">
-          <LogOut size={18} />
+        <Link href="/" className="sidebar-item" style={{ color: 'var(--danger-500)' }}>
+          <LogOut size={17} />
           <span>Exit App</span>
         </Link>
       </div>

@@ -1,111 +1,164 @@
 'use client';
 
-import { useState } from 'next';
+import { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const questions = [
+  {
+    q: 'When faced with a complex problem, what is your first instinct?',
+    options: [
+      'Break it down into smaller, logical steps.',
+      'Look for a creative or out-of-the-box solution.',
+      'Discuss it with others to get different perspectives.',
+      'Find a tool or software that can solve it automatically.',
+    ],
+  },
+  {
+    q: 'Which of these activities sounds most appealing for a weekend project?',
+    options: [
+      'Building a simple website or app.',
+      'Designing a logo or painting.',
+      'Organizing an event for your community.',
+      'Analyzing data to predict sports outcomes.',
+    ],
+  },
+  {
+    q: 'How do you handle repetitive tasks?',
+    options: [
+      'I try to automate them using scripts or shortcuts.',
+      'I get bored quickly and try to change the process.',
+      "I don't mind them if they need to be done.",
+      'I delegate them if possible.',
+    ],
+  },
+];
 
 export default function Assessment() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [current, setCurrent] = useState(0);
   const [completed, setCompleted] = useState(false);
 
-  const questions = [
-    {
-      question: "When faced with a complex problem, what is your first instinct?",
-      options: [
-        "Break it down into smaller, logical steps.",
-        "Look for a creative or out-of-the-box solution.",
-        "Discuss it with others to get different perspectives.",
-        "Find a tool or software that can solve it automatically."
-      ]
-    },
-    {
-      question: "Which of these activities sounds most appealing for a weekend project?",
-      options: [
-        "Building a simple website or app.",
-        "Designing a logo or painting.",
-        "Organizing an event for your community.",
-        "Analyzing data to predict sports outcomes."
-      ]
-    },
-    {
-      question: "How do you handle repetitive tasks?",
-      options: [
-        "I try to automate them using scripts or shortcuts.",
-        "I get bored quickly and try to change the process.",
-        "I don't mind them if they need to be done.",
-        "I delegate them if possible."
-      ]
-    }
-  ];
-
   const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
     } else {
       setCompleted(true);
     }
   };
+  const handleBack = () => {
+    if (current > 0) setCurrent(current - 1);
+  };
+
+  const progress = ((current + 1) / questions.length) * 100;
 
   return (
     <DashboardLayout>
-      <div className="max-w-3xl mx-auto py-10">
+      <div style={{ maxWidth: 680, margin: '0 auto', paddingTop: 20 }}>
         {!completed ? (
           <>
-            <div className="mb-8">
-              <h1 className="display-sm mb-2">Career Fit Assessment</h1>
-              <p className="text-secondary">Question {currentQuestion + 1} of {questions.length}</p>
-              <div className="w-full bg-gray-200 h-2 rounded-full mt-4">
-                <div 
-                  className="bg-primary-600 h-2 rounded-full transition-all duration-300" 
-                  style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                ></div>
+            {/* Header */}
+            <div style={{ marginBottom: 32 }}>
+              <h1 className="display-sm" style={{ marginBottom: 8 }}>Career Fit Assessment</h1>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
+                Question {current + 1} of {questions.length}
+              </p>
+              {/* Progress bar */}
+              <div className="progress-bar" style={{ marginTop: 16 }}>
+                <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>
             </div>
 
-            <div className="card p-8 mb-8 animate-fadeIn">
-              <h2 className="text-xl font-bold mb-6">{questions[currentQuestion].question}</h2>
-              <div className="flex flex-col gap-4">
-                {questions[currentQuestion].options.map((opt, i) => (
+            {/* Question card */}
+            <motion.div
+              key={current}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35 }}
+              className="card"
+              style={{ padding: 32, marginBottom: 24 }}
+            >
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: 24, color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                {questions[current].q}
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {questions[current].options.map((opt, i) => (
                   <button key={i} className="option-card" onClick={handleNext}>
-                    <span>{opt}</span>
+                    <div style={{
+                      width: 28, height: 28, borderRadius: 7, flexShrink: 0,
+                      border: '2px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-muted)',
+                    }}>
+                      {String.fromCharCode(65 + i)}
+                    </div>
+                    <span style={{ flex: 1 }}>{opt}</span>
                   </button>
                 ))}
               </div>
-            </div>
-            
-            <div className="flex justify-between">
-              <button 
-                className="btn btn-ghost"
-                onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
-                disabled={currentQuestion === 0}
-              >
-                <ArrowLeft size={18} /> Previous
+            </motion.div>
+
+            {/* Nav */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button className="btn btn-ghost" onClick={handleBack} disabled={current === 0}>
+                <ArrowLeft size={16} /> Previous
+              </button>
+              <button className="btn btn-ghost btn-sm" onClick={handleNext}>
+                Skip <ArrowRight size={14} />
               </button>
             </div>
           </>
         ) : (
-          <div className="card p-10 text-center animate-slideUp">
-            <div className="flex justify-center mb-6">
-              <CheckCircle2 size={64} className="text-success-500" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="card"
+            style={{ padding: 48, textAlign: 'center' }}
+          >
+            <div style={{
+              width: 72, height: 72, borderRadius: '50%', margin: '0 auto 24px',
+              background: 'linear-gradient(135deg, var(--success-500), var(--success-600))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 8px 24px rgba(34,197,94,0.30)',
+            }}>
+              <CheckCircle2 size={36} color="#fff" />
             </div>
-            <h2 className="display-sm mb-4">Assessment Complete!</h2>
-            <p className="text-secondary mb-8">We've updated your profile based on your responses.</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-8">
-              <div className="p-4 border rounded-lg bg-gray-50">
-                <div className="text-sm font-semibold text-secondary mb-1">Top Match</div>
-                <div className="text-lg font-bold text-primary-700">Software Engineering</div>
-                <div className="text-xs mt-2 text-success-500 font-medium">92% Compatibility</div>
+            <h2 className="display-sm" style={{ marginBottom: 12 }}>Assessment Complete!</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: 32 }}>
+              We've updated your profile based on your responses.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, marginBottom: 32 }}>
+              <div style={{
+                padding: 20, background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)', textAlign: 'left',
+              }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Top Match
+                </div>
+                <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
+                  Software Engineering
+                </div>
+                <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>92% Match</span>
               </div>
-              <div className="p-4 border rounded-lg bg-gray-50">
-                <div className="text-sm font-semibold text-secondary mb-1">Secondary Match</div>
-                <div className="text-lg font-bold text-primary-700">Data Science</div>
-                <div className="text-xs mt-2 text-success-500 font-medium">85% Compatibility</div>
+              <div style={{
+                padding: 20, background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-lg)', textAlign: 'left',
+              }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Secondary
+                </div>
+                <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
+                  Data Science
+                </div>
+                <span className="badge badge-primary" style={{ fontSize: '0.68rem' }}>85% Match</span>
               </div>
             </div>
 
-            <a href="/dashboard" className="btn btn-primary">Return to Dashboard</a>
-          </div>
+            <a href="/dashboard" className="btn btn-primary btn-lg" style={{ width: '100%', justifyContent: 'center' }}>
+              Return to Dashboard
+            </a>
+          </motion.div>
         )}
       </div>
     </DashboardLayout>
