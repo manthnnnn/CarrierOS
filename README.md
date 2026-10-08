@@ -38,34 +38,45 @@ CareerOS is a production-ready, AI-powered career guidance platform built for In
 
 ## 🖥️ Screenshots
 
-> The app ships with a premium iOS-inspired dark/light UI. Below are descriptions of each screen — run the app locally to see them live.
+### 🏠 Landing Page
+![Landing Page](public/screenshots/landing.png)
+> Animated hero, stats bar, 3 feature cards, "How it works" section, gradient CTA banner
 
-### Landing Page
-- Full-screen hero with animated gradient orbs
-- "Don't choose your future because your friend did" headline
-- 4-stat social proof bar (50K+ students, 95% satisfaction)
-- 3 feature cards with gradient icons
-- "How it works" 3-step section
-- Gradient CTA banner + footer
+### 📊 Dashboard
+![Dashboard](public/screenshots/dashboard.png)
+> Career match score ring, stat cards, risk alert, quick-access grid, 30-day action plan
 
-### Dashboard
-- Personalised greeting with date
-- 4 stat cards (Career Match 87%, Modules 3/8, 7-day streak, Active Courses)
-- Hero gradient card with live SVG score ring (87% AI Engineer match)
-- Risk factor alert + Quick Access grid
-- 30-day action plan with done/active/pending states
+### 🧭 Onboarding
+![Onboarding](public/screenshots/onboarding.png)
+> 3-step animated flow — education level → stream → profile creation
 
-### AI Copilot
-- Premium chat UI with animated message bubbles
-- Starter prompt chips for common questions
-- Google Gemini 1.5 Flash integration (bring your own API key)
-- Typing indicator with pulse animation
+### 🎯 Career Assessment
+![Assessment](public/screenshots/assessment.png)
+> Multi-question aptitude test with progress bar and instant results
 
-### Onboarding
-- 3-step animated slide transitions (AnimatePresence)
-- Education level selection (Class 10 → College)
-- Stream/interest selection
-- Profile confirmation screen
+### 🔍 Career Explorer
+![Career Explorer](public/screenshots/careers.png)
+> Searchable career cards with match %, salary, growth rate, and difficulty
+
+### 🗺️ My Roadmap
+![Roadmap](public/screenshots/roadmap.png)
+> Personalised timeline from current class to career entry with done/active/pending states
+
+### 💻 Career Simulator
+![Simulator](public/screenshots/simulator.png)
+> Interactive code debugging challenge — experience real day-to-day engineering work
+
+### 📚 Course Comparison
+![Courses](public/screenshots/courses.png)
+> Side-by-side degree comparison with duration, math rigor, coding focus, demand
+
+### 🏛️ College Finder
+![Colleges](public/screenshots/colleges.png)
+> Searchable ranked college list with match scores, fees, cutoffs, and type
+
+### 🤖 AI Copilot
+![AI Copilot](public/screenshots/copilot.png)
+> Live Gemini 1.5 Flash chat with starter prompts and animated message bubbles
 
 ---
 
